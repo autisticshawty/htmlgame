@@ -1,0 +1,145 @@
+<canvas id="main" width="800" height="600"></canvas>
+<script>
+var x = 50;
+var y = 50;
+var left = false;
+var up = false;
+var right = false; 
+var down = false;
+var initialmousex = 0;
+var initalmousey = 0;
+var clicking = false;
+var mousex = 0;
+var mousey = 0;
+const fps = 60;
+const canvas = document.getElementById('main');
+const ctx = canvas.getContext('2d');
+const playerWidth = 100;
+const playerHeight = 100;
+var rightEdge = 50 + playerWidth;
+var bottomEdge = 50 + playerHeight;
+var topPassing = false;
+var rightPassing = false;
+var bottomPassing = false;
+var leftPassing = false;
+var objectArray = [];
+function keydown(e){
+	switch(e.keyCode){
+		case 37: left = true; break;
+		case 38: up = true; break;
+		case 39: right = true; break;
+		case 40: down = true; break;
+	}
+}
+function keyup(e){
+	switch(e.keyCode){
+		case 37: left = false; break;
+		case 38: up = false; break;
+		case 39: right = false; break;
+		case 40: down = false; break;
+	}
+}
+function render(){
+	ctx.fillStyle = '#000';
+	ctx.fillRect(0, 0, canvas.width, canvas.height);
+	ctx.fillStyle = 'blue';
+	ctx.fillRect(x, y, playerWidth, playerHeight);
+	ctx.fillRect((playerWidth*-1)+rightEdge-canvas.width, y, playerWidth, playerHeight);
+	ctx.fillRect(x, (playerHeight*-1)+bottomEdge-canvas.height, playerWidth, playerHeight);
+	ctx.fillRect(x+canvas.width, y, playerWidth, playerHeight);
+	ctx.fillRect(x, y+canvas.height, playerWidth, playerHeight);
+	ctx.fillRect((playerWidth*-1)+rightEdge-canvas.width, (playerHeight*-1)+bottomEdge-canvas.height, playerWidth, playerHeight);
+	ctx.fillRect((playerWidth*-1)+rightEdge-canvas.width, y+canvas.height, playerWidth, playerHeight);
+	ctx.fillRect(x+canvas.width, (playerHeight*-1)+bottomEdge-canvas.height, playerWidth, playerHeight);
+	ctx.fillRect(x+canvas.width, y+canvas.height, playerWidth, playerHeight);
+	ctx.fillStyle = 'red';
+	for(var i = 0; i < objectArray.length; i+=4){
+		ctx.fillRect(objectArray[i], objectArray[i+1], objectArray[i+2], objectArray[i+3]);
+	}
+	if(clicking){
+		ctx.fillRect(initialmousex, initialmousey, mousex-initialmousex, mousey-initialmousey); 
+	}
+}
+function gameLogic(){
+	rightEdge = x + playerWidth;
+	bottomEdge = y + playerHeight;
+	if(left){
+		x-=5;
+	}
+	if(right){
+		x+=5;
+	}
+	if(up){
+		y-=5;
+	}
+	if(down){
+		y+=5;
+	}
+	if(rightEdge>canvas.width){
+		rightPassing = true;
+		if(x>canvas.width){
+			x = 0;
+		}
+	}
+	if(bottomEdge>canvas.height){
+		bottomPassing = true;
+		if(y>canvas.height){
+			y = 0;
+		}
+	}
+	if(x<0){
+		leftPassing = true;
+		if(x<(playerWidth*-1)){
+			x = canvas.width-playerWidth;
+		}
+	}
+	if(y<0){
+		topPassing = true;
+		if(y<(playerHeight*-1)){
+			y = canvas.height-playerHeight;
+		}
+	}
+}
+
+function click(e){
+	
+	
+}
+
+
+function mousedown(e){
+	initialmousex = e.x-8;
+	initialmousey = e.y-6;
+	clicking = true;
+}
+
+function mouseup(e){
+	objectArray.push(initialmousex);
+	objectArray.push(initialmousey);
+	objectArray.push(e.x-8-initialmousex);
+	objectArray.push(e.y-6-initialmousey);
+	clicking = false;
+}
+function mousemove(e){
+	mousex = e.x-8;
+	mousey = e.y-6;
+	
+}
+setInterval(render, 1000/fps);
+setInterval(gameLogic, 1000/fps);
+document.addEventListener('keydown', keydown);
+document.addEventListener('keyup', keyup);
+canvas.addEventListener('click', click);
+canvas.addEventListener('mousedown', mousedown);
+canvas.addEventListener('mouseup', mouseup);
+canvas.addEventListener('mousemove', mousemove);
+</script>
+<br>
+<span id="log"></span>
+<script>
+const log = document.getElementById("log");
+window.onload = function(){
+
+}
+
+</script>
