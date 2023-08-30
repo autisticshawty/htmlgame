@@ -23,6 +23,7 @@ var rightPassing = false;
 var bottomPassing = false;
 var leftPassing = false;
 var objectArray = [];
+var hitstop = false;
 function keydown(e){
 	switch(e.keyCode){
 		case 37: left = true; break;
@@ -40,9 +41,9 @@ function keyup(e){
 	}
 }
 function render(){
-	ctx.fillStyle = '#000';
+	ctx.fillStyle = `rgb(0 0 0)`;
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
-	ctx.fillStyle = 'blue';
+	ctx.fillStyle = `rgb(0 0 255)`;
 	ctx.fillRect(x, y, playerWidth, playerHeight);
 	ctx.fillRect((playerWidth*-1)+rightEdge-canvas.width, y, playerWidth, playerHeight);
 	ctx.fillRect(x, (playerHeight*-1)+bottomEdge-canvas.height, playerWidth, playerHeight);
@@ -58,6 +59,10 @@ function render(){
 	}
 	if(clicking){
 		ctx.fillRect(initialmousex, initialmousey, mousex-initialmousex, mousey-initialmousey); 
+	}
+	if(hitstop){
+		ctx.fillStyle = `rgb(0 0 0 / 0.5)`;
+		ctx.fillRect(0, 0, canvas.width, canvas.height);
 	}
 }
 function gameLogic(){
