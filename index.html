@@ -53,7 +53,7 @@ function render(){
 	ctx.fillRect((playerWidth*-1)+rightEdge-canvas.width, y+canvas.height, playerWidth, playerHeight);
 	ctx.fillRect(x+canvas.width, (playerHeight*-1)+bottomEdge-canvas.height, playerWidth, playerHeight);
 	ctx.fillRect(x+canvas.width, y+canvas.height, playerWidth, playerHeight);
-	ctx.fillStyle = 'red';
+	ctx.fillStyle = 'green';
 	for(var i = 0; i < objectArray.length; i+=4){
 		ctx.fillRect(objectArray[i], objectArray[i+1], objectArray[i+2], objectArray[i+3]);
 	}
