@@ -11,6 +11,7 @@ var initalmousey = 0;
 var clicking = false;
 var mousex = 0;
 var mousey = 0;
+var timer = 0;
 const fps = 60;
 const canvas = document.getElementById('main');
 const ctx = canvas.getContext('2d');
@@ -115,22 +116,29 @@ function gameLogic(){
 		}
 	}
 	for(var i = 0; i < bulletArray.length; i+=4){
-		if(x>810||x<-10||y>610||y<-10){
-			bulletArray.splice(i, 4);
-		}
 		bulletArray[i] += bulletArray[i+2];
 		bulletArray[i+1] += bulletArray[i+3];
 	}
+}
+function fireBullet(x1, y1, x2, y2){
+	var yChange = y2-y1;
+	var xChange = x2-x1;
+	var magnitude = Math.sqrt(yChange*yChange+xChange*xChange);
+	bulletArray.push(x1);
+	bulletArray.push(y1);
+	bulletArray.push(xChange/magnitude*6);
+	bulletArray.push(yChange/magnitude*6);
+
 }
 
 function click(e){
 	var yChange = e.y-middley;
 	var xChange = e.x-middlex;
-	var sum = Math.abs(yChange)+Math.abs(xChange);
+	var magnitude = Math.sqrt(yChange*yChange+xChange*xChange);
 	bulletArray.push(middlex);
 	bulletArray.push(middley);
-	bulletArray.push(xChange/sum*6);
-	bulletArray.push(yChange/sum*6);
+	bulletArray.push(xChange/magnitude*6);
+	bulletArray.push(yChange/magnitude*6);
 	
 }
 
