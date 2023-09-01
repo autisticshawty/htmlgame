@@ -14,8 +14,8 @@ var mousey = 0;
 const fps = 60;
 const canvas = document.getElementById('main');
 const ctx = canvas.getContext('2d');
-const playerWidth = 100;
-const playerHeight = 100;
+const playerWidth = 50;
+const playerHeight = 50;
 var rightEdge = 50 + playerWidth;
 var bottomEdge = 50 + playerHeight;
 var topPassing = false;
@@ -23,7 +23,10 @@ var rightPassing = false;
 var bottomPassing = false;
 var leftPassing = false;
 var objectArray = [];
+var bulletArray =[];
 var hitstop = false;
+var middlex = 0;
+var middley = 0;
 function keydown(e){
 	switch(e.keyCode){
 		case 37: left = true; break;
@@ -58,27 +61,34 @@ function render(){
 		ctx.fillRect(objectArray[i], objectArray[i+1], objectArray[i+2], objectArray[i+3]);
 	}
 	if(clicking){
-		ctx.fillRect(initialmousex, initialmousey, mousex-initialmousex, mousey-initialmousey); 
+		
+	}
+	for(var i = 0; i < bulletArray.length; i+=4){
+		ctx.fillRect(bulletArray[i]-10,bulletArray[i+1]-10,20,20);
 	}
 	if(hitstop){
 		ctx.fillStyle = `rgb(0 0 0 / 0.5)`;
 		ctx.fillRect(0, 0, canvas.width, canvas.height);
 	}
+	
 }
 function gameLogic(){
 	rightEdge = x + playerWidth;
 	bottomEdge = y + playerHeight;
+	middlex = x + (playerWidth/2);
+	middley = y + (playerHeight/2);
+
 	if(left){
-		x-=5;
+		x-=4;
 	}
 	if(right){
-		x+=5;
+		x+=4;
 	}
 	if(up){
-		y-=5;
+		y-=4;
 	}
 	if(down){
-		y+=5;
+		y+=4;
 	}
 	if(rightEdge>canvas.width){
 		rightPassing = true;
@@ -104,25 +114,32 @@ function gameLogic(){
 			y = canvas.height-playerHeight;
 		}
 	}
+	for(var i = 0; i < bulletArray.length; i+=4){
+		if(x>810||x<-10||y>610||y<-10){
+			bulletArray.splice(i, 4);
+		}
+		bulletArray[i] += bulletArray[i+2];
+		bulletArray[i+1] += bulletArray[i+3];
+	}
 }
 
 function click(e){
-	
+	var yChange = e.y-middley;
+	var xChange = e.x-middlex;
+	var sum = Math.abs(yChange)+Math.abs(xChange);
+	bulletArray.push(middlex);
+	bulletArray.push(middley);
+	bulletArray.push(xChange/sum*6);
+	bulletArray.push(yChange/sum*6);
 	
 }
 
 
 function mousedown(e){
-	initialmousex = e.x-8;
-	initialmousey = e.y-6;
 	clicking = true;
 }
 
 function mouseup(e){
-	objectArray.push(initialmousex);
-	objectArray.push(initialmousey);
-	objectArray.push(e.x-8-initialmousex);
-	objectArray.push(e.y-6-initialmousey);
 	clicking = false;
 }
 function mousemove(e){
