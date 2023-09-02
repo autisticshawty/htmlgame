@@ -28,6 +28,10 @@ var bulletArray =[];
 var hitstop = false;
 var middlex = 0;
 var middley = 0;
+var slashAngle = 0;
+var slashing = false;
+var slashAnimation = 0;
+var slashCooldown = false;
 function keydown(e){
 	switch(e.keyCode){
 		case 37: left = true; break;
@@ -57,7 +61,7 @@ function render(){
 	ctx.fillRect((playerWidth*-1)+rightEdge-canvas.width, y+canvas.height, playerWidth, playerHeight);
 	ctx.fillRect(x+canvas.width, (playerHeight*-1)+bottomEdge-canvas.height, playerWidth, playerHeight);
 	ctx.fillRect(x+canvas.width, y+canvas.height, playerWidth, playerHeight);
-	ctx.fillStyle = 'red';
+	ctx.fillStyle = `rgb(255 0 0)`;
 	for(var i = 0; i < objectArray.length; i+=4){
 		ctx.fillRect(objectArray[i], objectArray[i+1], objectArray[i+2], objectArray[i+3]);
 	}
@@ -70,6 +74,47 @@ function render(){
 	if(hitstop){
 		ctx.fillStyle = `rgb(0 0 0 / 0.5)`;
 		ctx.fillRect(0, 0, canvas.width, canvas.height);
+	}
+	if(slashing){
+		ctx.save();
+		ctx.translate(middlex,middley);
+		ctx.rotate(slashAngle+(Math.PI/2));
+		
+
+		slashAnimation++;
+		if(slashAnimation>=0&&slashAnimation<=3){
+			ctx.fillRect(-38,-46,10,7);
+			ctx.fillRect(1,-50,30,7);
+			ctx.fillRect(-29,-50,30,7);
+			ctx.fillStyle = `rgb(178 0 0)`
+			ctx.fillRect(30,-46,10,7);
+		}
+		if(slashAnimation>=4&&slashAnimation<=8){
+			ctx.fillRect(-38,-46,10,7);
+			ctx.fillRect(30,-46,10,7);
+			ctx.fillRect(-29,-50,30,7);
+			ctx.fillStyle = `rgb(178 0 0)`
+			ctx.fillRect(1,-50,30,7);
+		}
+		if(slashAnimation>=9&&slashAnimation<=13){
+			ctx.fillRect(30,-46,10,7);
+			ctx.fillRect(1,-50,30,7);
+			ctx.fillRect(-38,-46,10,7);
+			ctx.fillStyle = `rgb(178 0 0)`
+			ctx.fillRect(-29,-50,30,7);
+		}
+		if(slashAnimation>=14&&slashAnimation<=17){
+			ctx.fillRect(30,-46,10,7);
+			ctx.fillRect(1,-50,30,7);
+			ctx.fillRect(-29,-50,30,7);
+			ctx.fillStyle = `rgb(178 0 0)`
+			ctx.fillRect(-38,-46,10,7);
+		}
+		if(slashAnimation>19){
+			slashing = false;
+			slashAnimation = 0;
+		}
+	ctx.restore();	
 	}
 	
 }
@@ -118,6 +163,13 @@ function gameLogic(){
 	for(var i = 0; i < bulletArray.length; i+=4){
 		bulletArray[i] += bulletArray[i+2];
 		bulletArray[i+1] += bulletArray[i+3];
+		if(bulletArray[i]>820||bulletArray[i]<-20||bulletArray[i+1]>620||bulletArray[i+1]<-20){
+			bulletArray.splice(i,4);
+		}
+	}
+	timer++;
+	if(timer>60){
+		slashCooldown = false;
 	}
 }
 function fireBullet(x1, y1, x2, y2){
@@ -132,13 +184,14 @@ function fireBullet(x1, y1, x2, y2){
 }
 
 function click(e){
-	var yChange = e.y-middley;
-	var xChange = e.x-middlex;
-	var magnitude = Math.sqrt(yChange*yChange+xChange*xChange);
-	bulletArray.push(middlex);
-	bulletArray.push(middley);
-	bulletArray.push(xChange/magnitude*6);
-	bulletArray.push(yChange/magnitude*6);
+	if(!slashCooldown){
+		var dy = e.y-middley;
+		var dx = e.x-middlex;
+		slashing = true;
+		timer = 0;
+		slashCooldown = true;
+		slashAngle = Math.atan2(dy, dx);
+	}
 	
 }
 
